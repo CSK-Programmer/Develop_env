@@ -4,7 +4,7 @@ detail = True
 
 def select_mode():
     while(True):
-        mode_str = input(u"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInput a number to select a mode.\n0    start calculating\n1    show details to me\n2    Don't show details to me\n")
+        mode_str = input(u"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInput a number to select a mode.\n0    start calculating biggest common factor\n1    show details to me\n2    Don't show details to me\n3    start calculating least common multiple(New!)\n4    exit\n\nmode ")
         try:
             mode = int(mode_str)
         except ValueError:
@@ -17,7 +17,7 @@ def select_mode():
 def print_details(step,a,b,c):
     print(f'{step}    {a}Mod{b}={c}')
 
-def calculate(bigger_num,smaller_num):
+def calculate(bigger_num,smaller_num,mode = False):
     a0 = bigger_num
     b0 = smaller_num
     a,b = a0,b0
@@ -29,12 +29,16 @@ def calculate(bigger_num,smaller_num):
         if(detail):
             print_details(step,a,b,c)
         if(c == 0):
-            print(f'({a0},{b0})={b}')
-            time.sleep(15)
             break
         else:
             a=b
             b=c
+    if not mode:
+        print(f'({a0},{b0})={b}')
+    else:
+        b = a0 * b0 / b
+        print(f'[{a0},{b0}]={b}')
+    time.sleep(step * 2 + 5)
 
 def start():
     global detail
@@ -42,7 +46,7 @@ def start():
         mode = select_mode()
         if mode == 0:
             while(True):
-                a_str = input(u'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInput number1')
+                a_str = input(u'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInput number1\n')
                 try:
                     a = int(a_str)
                 except ValueError:
@@ -51,7 +55,35 @@ def start():
                     continue
                 break
             while(True):
-                b_str = input(u'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInput number2.It must be smaller than number1')
+                b_str = input(u'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInput number2.It must be smaller than number1\n')
+                try:
+                    b = int(b_str)
+                except ValueError:
+                    print(u'Please input a number\n')
+                    time.sleep(3)
+                    continue
+                break
+            if(a<=b):
+                print(u'Error\n')
+                time.sleep(3)
+                continue
+            calculate(a,b,False)
+        elif mode == 1:
+            detail = True
+        elif mode == 2:
+            detail = False
+        elif mode == 3:
+            while(True):
+                a_str = input(u'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInput number1\n')
+                try:
+                    a = int(a_str)
+                except ValueError:
+                    print(u'Please input a number')
+                    time.sleep(3)
+                    continue
+                break
+            while(True):
+                b_str = input(u'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInput number2.It must be smaller than number1\n')
                 try:
                     b = int(b_str)
                 except ValueError:
@@ -59,14 +91,8 @@ def start():
                     time.sleep(3)
                     continue
                 break
-            if(a<=b):
-                print(u'Error')
-                time.sleep(3)
-                continue
-            calculate(a,b)
-        elif mode == 1:
-            detail = True
-        elif mode == 2:
-            detail = False
+            calculate(a,b,True)
+        elif mode == 4:
+            break
 
 start()
