@@ -1,25 +1,34 @@
 VERSION 5.00
-Begin VB.Form Main_From 
+Begin VB.Form Main_Frm 
    Caption         =   "Calc"
-   ClientHeight    =   8385
-   ClientLeft      =   7815
-   ClientTop       =   4290
+   ClientHeight    =   8685
+   ClientLeft      =   8700
+   ClientTop       =   2685
    ClientWidth     =   4755
+   ControlBox      =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Moveable        =   0   'False
-   ScaleHeight     =   8385
+   ScaleHeight     =   8685
    ScaleMode       =   0  'User
    ScaleWidth      =   4755
    ShowInTaskbar   =   0   'False
+   Begin VB.CommandButton Command2 
+      Caption         =   "exit"
+      Height          =   615
+      Left            =   2575
+      TabIndex        =   5
+      Top             =   7440
+      Width           =   1500
+   End
    Begin VB.CommandButton Command1 
       Caption         =   "settings"
       Height          =   615
-      Left            =   1440
+      Left            =   575
       TabIndex        =   4
       Top             =   7440
-      Width           =   1695
+      Width           =   1500
    End
    Begin VB.CommandButton Command 
       Caption         =   "∆‰À˚‘ÀÀ„"
@@ -58,50 +67,41 @@ Begin VB.Form Main_From
       Width           =   3500
    End
 End
-Attribute VB_Name = "Main_From"
+Attribute VB_Name = "Main_Frm"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Public mode
-'Main_From.MaxButton = False
-'Main_From.MinButton = False
-'frmLogin.MaxButton = False
-'frmLogin.MinButton = False
-'Settings.MaxButton = False
-'Settings.MinButton = False
-'Calcer_0.MaxButton = False
-'Calcer_0.MinButton = False
-'Calcer_1.MaxButton = False
-'Calcer_1.MinButton = False
-'Calcer_2.MaxButton = False
-'Calcer_2.MinButton = False
-'Calcer_3.MaxButton = False
-'Calcer_3.MinButton = False
+
 
 Private Sub Command_Click(Index As Integer)
     Select Case Index
         Case 0
             mode = 0
             Calcer_0.Show 1
-            Me.Hide
         Case 1
             mode = 1
             frmLogin.Show 1
-            Me.Hide
         Case 2
             mode = 2
             frmLogin.Show 1
-            Me.Hide
         Case 3
             mode = 3
             frmLogin.Show 1
-            Me.Hide
     End Select
 End Sub
 
 Private Sub Command1_Click()
     mode = 4
-            frmLogin.Show 1
-            Me.Hide
+    frmLogin.Show 1
+End Sub
+
+Private Sub Command2_Click()
+    Me.Hide
+    frmAbout.Show 1
+End Sub
+
+Private Sub Form_Load()
+    pi = 3.14159265358979
+    setting = 0
 End Sub

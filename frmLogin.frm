@@ -6,6 +6,7 @@ Begin VB.Form frmLogin
    ClientLeft      =   2835
    ClientTop       =   3480
    ClientWidth     =   3750
+   ControlBox      =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -72,13 +73,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Option Explicit
-
-
 
 Private Sub cmdCancel_Click()
     Me.Hide
-    Main_From.Show
 End Sub
 
 Private Sub cmdOK_Click()
@@ -91,7 +88,9 @@ If txtUserName = "CSK_Programmer" And txtPassword = "467205498" Then
         Case 3
             Calcer_3.Show 1
         Case 4
-            Calcer_3.Show 1
+            Settings.Show 1
+    End Select
+    Me.Hide
 Else
         MsgBox "用户名或密码不正确", , "登录"
         Me.Hide
