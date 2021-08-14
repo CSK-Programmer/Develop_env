@@ -91,6 +91,7 @@ def start():
                     time.sleep(3)
                     continue
                 break
+            b_str = print(u'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
             calculate(a,b,True)
         elif mode == 4:
             break
