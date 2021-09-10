@@ -6,6 +6,7 @@ Begin VB.Form Dialog
    ClientLeft      =   7245
    ClientTop       =   5700
    ClientWidth     =   6030
+   ControlBox      =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False

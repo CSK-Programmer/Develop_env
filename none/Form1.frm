@@ -5,17 +5,10 @@ Begin VB.Form MainForm
    ClientLeft      =   7545
    ClientTop       =   4230
    ClientWidth     =   5325
+   ControlBox      =   0   'False
    LinkTopic       =   "Form1"
    ScaleHeight     =   4065
    ScaleWidth      =   5325
-   Begin VB.CommandButton Command4 
-      Caption         =   "Command4"
-      Height          =   615
-      Left            =   4680
-      TabIndex        =   3
-      Top             =   2040
-      Width           =   495
-   End
    Begin VB.CommandButton Command3 
       Caption         =   "ÍË³ö"
       Height          =   855
@@ -64,14 +57,32 @@ Private Sub Command3_Click()
         Else
             Shell ("regedit.exe")
         End If
+    Else
+        End
     End If
 End Sub
-
-Private Sub Command4_Click()
-    frmBrowser.Show
+Private Sub Command1_KeyPress(KeyAscii As Integer)
+    If KeyAscii = 100 Then
+        frmBrowser.Show
+        Me.Hide
+    End If
+End Sub
+Private Sub Command2_KeyPress(KeyAscii As Integer)
+    If KeyAscii = 100 Then
+        frmBrowser.Show
+        Me.Hide
+    End If
+End Sub
+Private Sub Command3_KeyPress(KeyAscii As Integer)
+    If KeyAscii = 100 Then
+        frmBrowser.Show
+        Me.Hide
+    End If
 End Sub
 
 Private Sub Form_Load()
     tested = False
     sum = 0
+    StartingAddress = "https://www.baidu.com/"
 End Sub
+

@@ -81,7 +81,7 @@ Begin VB.Form frmBrowser
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   "http:///"
+      Location        =   ""
    End
    Begin VB.Timer timTimer 
       Enabled         =   0   'False
@@ -102,7 +102,9 @@ Begin VB.Form frmBrowser
       Width           =   21360
       Begin VB.ComboBox cboAddress 
          Height          =   315
+         ItemData        =   "frmBrowser.frx":0000
          Left            =   45
+         List            =   "frmBrowser.frx":0002
          TabIndex        =   2
          Text            =   "https://www.baidu.com/"
          Top             =   300
@@ -131,27 +133,27 @@ Begin VB.Form frmBrowser
       BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
          NumListImages   =   6
          BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmBrowser.frx":0000
+            Picture         =   "frmBrowser.frx":0004
             Key             =   ""
          EndProperty
          BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmBrowser.frx":02E2
+            Picture         =   "frmBrowser.frx":02E6
             Key             =   ""
          EndProperty
          BeginProperty ListImage3 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmBrowser.frx":05C4
+            Picture         =   "frmBrowser.frx":05C8
             Key             =   ""
          EndProperty
          BeginProperty ListImage4 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmBrowser.frx":08A6
+            Picture         =   "frmBrowser.frx":08AA
             Key             =   ""
          EndProperty
          BeginProperty ListImage5 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmBrowser.frx":0B88
+            Picture         =   "frmBrowser.frx":0B8C
             Key             =   ""
          EndProperty
          BeginProperty ListImage6 {2C247F27-8591-11D1-B16A-00C0F0283628} 
-            Picture         =   "frmBrowser.frx":0E6A
+            Picture         =   "frmBrowser.frx":0E6E
             Key             =   ""
          EndProperty
       EndProperty
@@ -175,8 +177,8 @@ Private Sub Form_Load()
     cboAddress.Move 50, lblAddress.Top + lblAddress.Height + 15
 
     If Len(StartingAddress) > 0 Then
-        cboAddress.Text = StartingAddress
-        cboAddress.AddItem cboAddress.Text
+        cboAddress.text = StartingAddress
+        cboAddress.AddItem cboAddress.text
         '试图对启动地址进行浏览
         timTimer.Enabled = True
         brwWebBrowser.Navigate StartingAddress
@@ -213,7 +215,7 @@ End Sub
 Private Sub cboAddress_Click()
     If mbDontNavigateNow Then Exit Sub
     timTimer.Enabled = True
-    brwWebBrowser.Navigate cboAddress.Text
+    brwWebBrowser.Navigate cboAddress.text
 End Sub
 
 Private Sub cboAddress_KeyPress(KeyAscii As Integer)
@@ -227,6 +229,10 @@ Private Sub Form_Resize()
     cboAddress.Width = Me.ScaleWidth - 100
     brwWebBrowser.Width = Me.ScaleWidth - 100
     brwWebBrowser.Height = Me.ScaleHeight - (picAddress.Top + picAddress.Height) - 100
+End Sub
+
+Private Sub Form_Unload(Cancel As Integer)
+    MainForm.Show
 End Sub
 
 Private Sub timTimer_Timer()
