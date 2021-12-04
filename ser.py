@@ -1,5 +1,5 @@
 # encoding=utf-8
-import serial
+import serial, time
 
 class Ser():
     def __init__(self,port,baud):
@@ -12,19 +12,20 @@ class Ser():
             self.ser = ser
             return ser
         except Exception as e:
-            self.error('Open com fail!\n\tCOM:{}\n\tbaud:{}'.format(self.port, self.baud))
-            self.error('Exception:{}'.format(e))
+            print('Open com fail!\n\tCOM:{}\n\tbaud:{}'.format(self.port, self.baud))
+            print('Exception:{}'.format(e))
+            time.sleep(3)
 
     def write_data(self,string):
         if self.ser is None:
             self.open_port()
-        success_bytes = self.ser.write.encode('UTF-8')
+        success_bytes = self.ser.write(string)
         return success_bytes
 
     def read_data(self):
         if self.ser is None:
             self.open_port()
-        data = serial.readall()
+        data = self.ser.read(10)
         return data
 
     def close_port(self):
