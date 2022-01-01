@@ -18,26 +18,33 @@ def print_details(step,a,b,c):
     print(f'{step}    {a}Mod{b}={c}')
 
 def calculate(bigger_num,smaller_num,mode = False):
+    start_time = time.time()
     a0 = bigger_num
     b0 = smaller_num
     a,b = a0,b0
     c = 0
     step = 0
+    details = []
     while(True):
         step+=1
         c = a % b
-        if(detail):
-            print_details(step,a,b,c)
+        details.append([step,a,b,c])
         if(c == 0):
+            stop_time = time.time()
             break
         else:
             a=b
             b=c
+    work_time = stop_time-start_time
+    if detail:
+        for detail_tmp in details:
+            print_details(detail_tmp[0],detail_tmp[1],detail_tmp[2],detail_tmp[3])
     if not mode:
         print(f'({a0},{b0})={b}')
     else:
         b = a0 * b0 / b
         print(f'[{a0},{b0}]={b}')
+    print(f'Use {work_time} seconds.')
     time.sleep(step * 2 + 5)
 
 def start():
