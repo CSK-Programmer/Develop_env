@@ -2,13 +2,14 @@
 import serial, time
 
 class Ser():
-    def __init__(self,port,baud):
+    def __init__(self,port,baud,timeout=0.5):
         self.port = port
         self.baud = baud
+        self.timeout = timeout
 
     def open_port(self):
         try:
-            ser = serial.Serial(self.port, self.baud)
+            ser = serial.Serial(port=self.port, baudrate=self.baud, timeout=self.timeout)
             self.ser = ser
             return ser
         except Exception as e:
@@ -22,10 +23,14 @@ class Ser():
         success_bytes = self.ser.write(string)
         return success_bytes
 
-    def read_data(self):
+    def read_data(self,line=1):
         if self.ser is None:
             self.open_port()
-        data = self.ser.read(10)
+        data = b''
+        for i in range(0,line):
+            data_tmp = self.ser.readline()
+            if data_tmp != b'':
+                data += data_tmp
         return data
 
     def close_port(self):
