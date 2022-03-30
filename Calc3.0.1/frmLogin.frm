@@ -101,3 +101,18 @@ Else
         Me.Hide
 End If
 End Sub
+
+Private Sub Form_Load()
+    If Debug_mode Then
+        Select Case mode
+            Case 1
+                Calcer_1.Show 1
+            Case 2
+                Calcer_2.Show 1
+            Case 3
+                Calcer_3.Show 1
+            Case 4
+                Settings.Show 1
+        End Select
+    End If
+End Sub

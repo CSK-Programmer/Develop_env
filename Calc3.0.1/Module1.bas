@@ -1,3 +1,3 @@
 Attribute VB_Name = "Module1"
 Option Explicit
-Public mode As Byte, setting As Byte, Op As Byte, result As Double, pi
+Public mode As Byte, setting As Byte, Op As Byte, result As Double, pi As Double, Debug_mode As Boolean

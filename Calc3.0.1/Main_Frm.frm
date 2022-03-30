@@ -72,8 +72,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
 Private Sub Command_Click(Index As Integer)
     Select Case Index
         Case 0
@@ -102,6 +100,13 @@ Private Sub Command2_Click()
 End Sub
 
 Private Sub Form_Load()
-    pi = 3.14159265358979
-    setting = 0
+    'Dim comm
+    'comm = Command
+    'pi = 3.14159265358979
+    'setting = 0
+    If Command = "" Then
+        Debug_mode = True
+    Else
+        Debug_mode = False
+    End If
 End Sub
