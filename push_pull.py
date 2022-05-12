@@ -5,7 +5,7 @@ import math
 # settings
 Load_Res = 4                            #负载阻值(单位:Ω)
 Load_Power = 3                          #负载功率(单位:W)
-V_supply = 9000//2                      #电源电压(单位:mV,单电源须除以2)
+V_supply = 8000//2                      #电源电压(单位:mV,单电源须除以2)
 
 #计算
 V_Load_max = math.sqrt(Load_Res*Load_Power)
