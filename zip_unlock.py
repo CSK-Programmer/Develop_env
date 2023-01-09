@@ -6,7 +6,7 @@ flag = True # 用于判断线程是否需要终止，为True时程序执行
 def extract(password, file):
   try:
     password = str(password)
-    file.extractall(path='.', pwd=password.encode('utf-8'))
+    file.extractall(path='./extract', pwd=password.encode('utf-8'))
     print ("当前压缩密码为：",password)
     end_time = time.time()
     print ('多线程破解压缩包花了%s秒'%(end_time-start_time))
