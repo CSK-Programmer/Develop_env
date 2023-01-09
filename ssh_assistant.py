@@ -9,9 +9,9 @@ copy_rl: use "scp" to copy file or dir from remote host to local host
 '''
 
 def get_data(data_list):
+    output = {}
     for data_name in data_list:
-        output = {}
-        output[date_name] = input(f'{data_name}:')
+        output[f'{data_name}'] = input(f'{data_name}:')
     return output
 
 
@@ -44,12 +44,15 @@ def main():
     while(True):
         oper = input('Operation:')
         if(oper == 'conn'):
-            run_ssh()
+            data = get_data(['host','user','port'])
+            run_ssh(data['host'],data['user'],data['port'])
         elif(oper == 'copylr'):
-            run_scp()
+            data = get_data(['local_dir','remote_host','user','remote_dir','port'])
+            run_scp(data['local_dir'],data['remote_host'],data['user'],data['remote_dir'],data['port'],False)
         elif(oper == 'copyrl'):
-            run_scp()
+            data = get_data(['remote_host','user','remote_dir','local_dir','port'])
+            run_scp(data['local_dir'],data['remote_host'],data['user'],data['remote_dir'],data['port'],True)
         elif(oper == 'usage'):
-            print()
+            print(usage)
 
-print(get_data(['isjgf','jgksdfhfd']))
+main()
