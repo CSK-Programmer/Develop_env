@@ -1,2 +1,6 @@
 __pycache__/
 Web/
+build/
+./*.spec
+Flappy Bird/
+Snake/

@@ -1,3 +1,5 @@
+import os
+
 def base(string:str)->str:
     oldstr = ''
     newstr = []
@@ -24,3 +26,4 @@ def base(string:str)->str:
 
 
 print(base(input()))
+os.system('pause')
