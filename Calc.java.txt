@@ -1,0 +1,1346 @@
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+/**
+ * Java计算器终端版1.0!
+ * @author DeltaTLY
+ * @version 1.0
+ */
+
+public class Calc {
+    //加法
+    public static Complex add(Complex com1, Complex com2) {
+        return new Complex(com1.re() + com2.re(), com1.im() + com2.im());
+    }
+    //减法
+    public static Complex minus(Complex com1, Complex com2) {
+        return new Complex(com1.re() - com2.re(), com1.im() - com2.im());
+    }
+    //乘法
+    public static Complex multiply(Complex com1, Complex com2) {
+        return new Complex(com1.re() * com2.re() - com1.im() * com2.im(), com1.re() * com2.im() + com2.re() * com1.im());
+    }
+    //除法
+    public static Complex divide(Complex com1, Complex com2) {
+        return multiply(com1, rec(com2));
+    }
+    //模长
+    public static Complex abs(Complex com) {
+        return new Complex(Math.sqrt(com.re() * com.re() + com.im() * com.im()));
+    }
+    //倒数
+    public static Complex rec(Complex com) {
+        return new Complex(com.re() / (com.re() * com.re() + com.im() * com.im()), -com.im() / (com.re() * com.re() + com.im() * com.im()));
+    }
+    //辐角
+    public static Complex arg(Complex com) {
+        return new Complex(Math.atan2(com.im(), com.re()));
+    }
+    //自然指数
+    public static Complex exp(Complex com) {
+        return new Complex(Math.exp(com.re()) * Math.cos(com.im()), Math.exp(com.re()) * Math.sin(com.im()));
+    }
+    //实部提取
+    public static Complex re(Complex com) {
+        return new Complex(com.re());
+    }
+    //虚部提取
+    public static Complex im(Complex com) {
+        return new Complex(com.im());
+    }
+    //幂运算
+    public static Complex pow(Complex com1, Complex com2) {
+        return multiply(new Complex(Math.pow(com1.abs(), com2.re())), exp(add(multiply(arg(com1), multiply(com2, new Complex(0, 1))), multiply(new Complex(com2.im() * Math.log(com1.abs())), new Complex(0, 1)))));
+    }
+    //自然对数
+    public static Complex ln(Complex com) {
+        return add(new Complex(0, com.arg()), new Complex(Math.log(com.abs())));
+    }
+    //对数运算
+    public static Complex logab(Complex com1, Complex com2) {
+        return divide(ln(com1), ln(com2));
+    }
+    //阶乘
+    public static Complex factorial(Complex com) {
+        if (Math.abs(com.im()) < 0.0000001 && Math.abs(Math.round(com.re()) - com.re()) < 0.0000001 && Math.round(com.re()) >= 0) {
+            int varNum = (int) Math.round(com.re());
+            double varResult = 1;
+            for (int i = varNum; i > 0; i--) {
+                varResult *= i;
+            }
+            return new Complex(varResult);
+        } else {
+            return new Complex(Double.NaN, Double.NaN);
+        }
+    }
+    //三角函数
+    public static Complex sin(Complex com, boolean ifRad) {
+        Complex result = divide(minus(exp(multiply(com, new Complex(0, 1))), exp(multiply(com, new Complex(0, -1)))), new Complex(0, 2));
+        if (ifRad) {
+            return result;
+        } else {
+            return sin(multiply(com, new Complex(Math.PI / 180)), true);
+        }
+    }
+    public static Complex cos(Complex com, boolean ifRad) {
+        Complex result = divide(add(exp(multiply(com, new Complex(0, 1))), exp(multiply(com, new Complex(0, -1)))), new Complex(2));
+        if (ifRad) {
+            return result;
+        } else {
+            return cos(multiply(com, new Complex(Math.PI / 180)), true);
+        }
+    }
+    public static Complex tan(Complex com, boolean ifRad) {
+        Complex result = divide(sin(com, true), cos(com, true));
+        if (ifRad) {
+            return result;
+        } else {
+            return tan(multiply(com, new Complex(Math.PI / 180)), true);
+        }
+    }
+    public static Complex cot(Complex com, boolean ifRad) {
+        Complex result = rec(tan(com, true));
+        if (ifRad) {
+            return result;
+        } else {
+            return cot(multiply(com, new Complex(Math.PI / 180)), true);
+        }
+    }
+    public static Complex sec(Complex com, boolean ifRad) {
+        Complex result = rec(cos(com, true));
+        if (ifRad) {
+            return result;
+        } else {
+            return sec(multiply(com, new Complex(Math.PI / 180)), true);
+        }
+    }
+    public static Complex csc(Complex com, boolean ifRad) {
+        Complex result = rec(sin(com, true));
+        if (ifRad) {
+            return result;
+        } else {
+            return csc(multiply(com, new Complex(Math.PI / 180)), true);
+        }
+    }
+    public static Complex arcsin(Complex com, boolean ifRad) {
+        Complex result = multiply(new Complex(0, -1), ln(add(pow(minus(new Complex(1), pow(com, new Complex(2))), new Complex(0.5)), multiply(new Complex(0, 1), com))));
+        if (ifRad) {
+            return result;
+        } else {
+            return multiply(result, new Complex(180 / Math.PI));
+        }
+    }
+    public static Complex arccos(Complex com, boolean ifRad) {
+        Complex result = multiply(new Complex(0, -1), ln(add(pow(minus(pow(com, new Complex(2)), new Complex(1)), new Complex(0.5)), com)));
+        if (ifRad) {
+            return result;
+        } else {
+            return multiply(result, new Complex(180 / Math.PI));
+        }
+    }
+    public static Complex arctan(Complex com, boolean ifRad) {
+        Complex result = multiply(new Complex(0, -0.5), ln(divide(add(new Complex(1), multiply(new Complex(0, 1), com)), minus(new Complex(1), multiply(new Complex(0, 1), com)))));
+        if (ifRad) {
+            return result;
+        } else {
+            return multiply(result, new Complex(180 / Math.PI));
+        }
+    }
+    public static Complex arccot(Complex com, boolean ifRad) {
+        Complex result = arctan(rec(com), true);
+        if (ifRad) {
+            return result;
+        } else {
+            return multiply(result, new Complex(180 / Math.PI));
+        }
+    }
+    public static Complex arcsec(Complex com, boolean ifRad) {
+        Complex result = arccos(rec(com), true);
+        if (ifRad) {
+            return result;
+        } else {
+            return multiply(result, new Complex(180 / Math.PI));
+        }
+    }
+    public static Complex arccsc(Complex com, boolean ifRad) {
+        Complex result = arcsin(rec(com), true);
+        if (ifRad) {
+            return result;
+        } else {
+            return multiply(result, new Complex(180 / Math.PI));
+        }
+    }
+    //双曲函数
+    public static Complex sinh(Complex com) {
+        return divide(minus(exp(com), exp(minus(new Complex(0), com))), new Complex(2));
+    }
+    public static Complex cosh(Complex com) {
+        return divide(add(exp(com), exp(minus(new Complex(0), com))), new Complex(2));
+    }
+    public static Complex tanh(Complex com) {
+        return divide(sinh(com), cosh(com));
+    }
+    public static Complex coth(Complex com) {
+        return rec(tanh(com));
+    }
+    public static Complex sech(Complex com) {
+        return rec(cosh(com));
+    }
+    public static Complex csch(Complex com) {
+        return rec(sinh(com));
+    }
+    public static Complex arcsinh(Complex com) {
+        return ln(add(pow(add(pow(com, new Complex(2)), new Complex(1)), new Complex(0.5)), com));
+    }
+    public static Complex arccosh(Complex com) {
+        return ln(add(pow(minus(pow(com, new Complex(2)), new Complex(1)), new Complex(0.5)), com));
+    }
+    public static Complex arctanh(Complex com) {
+        return multiply(new Complex(0.5), ln(divide(add(new Complex(1), com), minus(new Complex(1), com))));
+    }
+    public static Complex arccoth(Complex com) {
+        return arctanh(rec(com));
+    }
+    public static Complex arcsech(Complex com) {
+        return arccosh(rec(com));
+    }
+    public static Complex arccsch(Complex com) {
+        return arcsinh(rec(com));
+    }
+
+
+    public static ListMemory compute(ListMemory lm) {
+        ArrayList<String> func = lm.getFunc();
+        ArrayList<Complex> numb = lm.getNumb();
+        ArrayList<Integer> posi = lm.getPosi();
+        String error = lm.getError();
+        boolean ifRad = lm.isIfRad();
+
+        //括号
+        for (int varPosi = 0; varPosi < func.size() && error == null;) {
+            if (func.get(varPosi).equals("(")) {
+                ArrayList<String> varFunc = new ArrayList<String>();
+                ArrayList<Complex> varThisNumb = new ArrayList<Complex>();
+                ArrayList<Integer> varThisPosi = new ArrayList<Integer>();
+
+                boolean ifFound = false;
+                int varNumb = 1;
+                varPosi++;
+                while (varPosi < func.size()) {
+                    if (func.get(varPosi).equals("(")) {
+                        varNumb++;
+                        varFunc.add(func.get(varPosi));
+                        func.remove(varPosi);
+                        varThisNumb.add(numb.get(varPosi));
+                        numb.remove(varPosi);
+                        varThisPosi.add(posi.get(varPosi));
+                        posi.remove(varPosi);
+                    } else if (func.get(varPosi).equals(")")) {
+                        varNumb--;
+                        if (varNumb == 0) {
+                            ifFound = true;
+                            break;
+                        } else {
+                            varFunc.add(func.get(varPosi));
+                            func.remove(varPosi);
+                            varThisNumb.add(numb.get(varPosi));
+                            numb.remove(varPosi);
+                            varThisPosi.add(posi.get(varPosi));
+                            posi.remove(varPosi);
+                        }
+                    } else {
+                        varFunc.add(func.get(varPosi));
+                        func.remove(varPosi);
+                        varThisNumb.add(numb.get(varPosi));
+                        numb.remove(varPosi);
+                        varThisPosi.add(posi.get(varPosi));
+                        posi.remove(varPosi);
+                    }
+                }
+
+                if (ifFound) {
+                    ListMemory listMemory = compute(new ListMemory(varFunc, varThisNumb, varThisPosi, null, ifRad));
+
+                    if (varPosi - 2 >= 0) {
+                        switch (func.get(varPosi - 2)) {
+                            case "square" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, pow(listMemory.getNumb().get(0), new Complex(2)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "cube" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, pow(listMemory.getNumb().get(0), new Complex(3)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "sqrt" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, pow(listMemory.getNumb().get(0), new Complex(0.5)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "cbrt" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, pow(listMemory.getNumb().get(0), new Complex(0.33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "exp" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, exp(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "pow" -> {
+                                if (listMemory.getFunc().size() == 3) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, pow(listMemory.getNumb().get(0), listMemory.getNumb().get(2)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "ln" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, ln(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "lg" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, logab(listMemory.getNumb().get(0), new Complex(10)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "logb" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, logab(listMemory.getNumb().get(0), new Complex(2)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "logab" -> {
+                                if (listMemory.getFunc().size() == 3) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, logab(listMemory.getNumb().get(0), listMemory.getNumb().get(2)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "abs" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, abs(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arg" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arg(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "re" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, re(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "im" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, im(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "rec" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, rec(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "factorial" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, factorial(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "sin" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, sin(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "cos" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, cos(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "tan" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, tan(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "cot" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, cot(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "sec" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, sec(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "csc" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, csc(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arcsin" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arcsin(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arccos" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arccos(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arctan" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arctan(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arccot" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arccot(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arcsec" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arcsec(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arccsc" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arccsc(listMemory.getNumb().get(0), ifRad));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "sinh" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, sinh(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "cosh" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, cosh(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "tanh" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, tanh(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "coth" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, coth(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "sech" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, sech(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "csch" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, csch(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arcsinh" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arcsinh(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arccosh" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arccosh(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arctanh" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arctanh(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arccoth" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arccoth(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arcsech" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arcsech(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            case "arccsch" -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, arccsch(listMemory.getNumb().get(0)));
+                                } else {
+                                    error = "[函数参数错误]字符" + (posi.get(varPosi)) + "函数参数出现错误。";
+                                }
+                            }
+                            default -> {
+                                if (listMemory.getFunc().size() == 1) {
+                                    func.remove(varPosi);
+                                    numb.remove(varPosi);
+                                    posi.remove(varPosi--);
+                                    func.set(varPosi, "number");
+                                    numb.set(varPosi++, listMemory.getNumb().get(0));
+                                } else {
+                                    error = "[表达式错误]括号内表达式错误。";
+                                }
+                            }
+                        }
+                    } else {
+                        if (listMemory.getFunc().size() == 1) {
+                            func.remove(varPosi);
+                            numb.remove(varPosi);
+                            posi.remove(varPosi--);
+                            func.set(varPosi, "number");
+                            numb.set(varPosi++, listMemory.getNumb().get(0));
+                        } else {
+                            error = "[表达式错误]括号内表达式错误。";
+                        }
+                    }
+                } else {
+                    error = "[括号不匹配]字符" + (posi.get(varPosi - 1) + 1) + "未找到匹配的“)”。";
+                }
+            } else if (func.get(varPosi).equals(")")) {
+                error = "[括号不匹配]字符" + (posi.get(varPosi) + 1) + "未找到匹配的“(”。";
+            } else {
+                varPosi++;
+            }
+        }
+        //阶乘运算
+        for (int varPosi = 0; varPosi < func.size() && error == null;) {
+            if (func.get(varPosi).equals("!")) {
+                try {
+                    Complex result = factorial(numb.get(varPosi - 1));
+                    numb.set(varPosi - 1, result);
+                    func.remove(varPosi);
+                    numb.remove(varPosi);
+                    posi.remove(varPosi);
+                } catch (Exception ex) {
+                    error = "[运算符参数错误]字符" + (posi.get(varPosi) + 1) + "运算符“!”参数错误。";
+                }
+            } else {
+                varPosi++;
+            }
+        }
+        //幂运算
+        for (int varPosi = 0; varPosi < func.size() && error == null;) {
+            if (func.get(varPosi).equals("^")) {
+                if (func.get(varPosi + 1).equals("-")) {
+                    if (varPosi + 2 < func.size() && func.get(varPosi + 2).equals("number")) {
+                        try {
+                            func.remove(varPosi + 1);
+                            numb.remove(varPosi + 1);
+                            posi.remove(varPosi + 1);
+                            Complex varNum = numb.get(varPosi + 1);
+                            numb.set(varPosi + 1, minus(new Complex(0), varNum));
+                        } catch (Exception ex) {
+                            error = "[运算符参数错误]字符" + (posi.get(varPosi) + 2) + "运算符“-”参数错误。";
+                        }
+                    } else {
+                        error = "[运算符参数错误]字符" + (posi.get(varPosi) + 2) + "运算符“-”参数错误。";
+                    }
+                }
+                try {
+                    Complex result = pow(numb.get(varPosi - 1), numb.get(varPosi + 1));
+                    numb.set(varPosi - 1, result);
+                    func.remove(varPosi);
+                    numb.remove(varPosi);
+                    posi.remove(varPosi);
+                    func.remove(varPosi);
+                    numb.remove(varPosi);
+                    posi.remove(varPosi);
+                } catch (Exception ex) {
+                    error = "[运算符参数错误]字符" + (posi.get(varPosi) + 1) + "运算符“^”参数错误。";
+                }
+            } else {
+                varPosi++;
+            }
+        }
+        //乘法(无符号)
+        for (int varPosi = 0; varPosi < func.size() && error == null;) {
+            if (varPosi + 1 < func.size() && func.get(varPosi).equals("number") && func.get(varPosi + 1).equals("number")) {
+                try {
+                    Complex result = multiply(numb.get(varPosi), numb.get(varPosi + 1));
+                    numb.set(varPosi, result);
+                    func.remove(varPosi + 1);
+                    numb.remove(varPosi + 1);
+                    posi.remove(varPosi + 1);
+                } catch (Exception ex) {
+                    error = "[运算符参数错误]字符" + (posi.get(varPosi) + 1) + "无法使用“*”连接参数。";
+                }
+            } else {
+                varPosi++;
+            }
+        }
+        //乘除运算
+        for (int varPosi = 0; varPosi < func.size() && error == null;) {
+            if (func.get(varPosi).equals("*")) {
+                if (func.get(varPosi + 1).equals("-")) {
+                    if (varPosi + 2 < func.size() && func.get(varPosi + 2).equals("number")) {
+                        try {
+                            func.remove(varPosi + 1);
+                            numb.remove(varPosi + 1);
+                            posi.remove(varPosi + 1);
+                            Complex varNum = numb.get(varPosi + 1);
+                            numb.set(varPosi + 1, minus(new Complex(0), varNum));
+                        } catch (Exception ex) {
+                            error = "[运算符参数错误]字符" + (posi.get(varPosi) + 2) + "运算符“-”参数错误。";
+                        }
+                    } else {
+                        error = "[运算符参数错误]字符" + (posi.get(varPosi) + 2) + "运算符“-”参数错误。";
+                    }
+                }
+                try {
+                    Complex result = multiply(numb.get(varPosi - 1), numb.get(varPosi + 1));
+                    numb.set(varPosi - 1, result);
+                    func.remove(varPosi);
+                    numb.remove(varPosi);
+                    posi.remove(varPosi);
+                    func.remove(varPosi);
+                    numb.remove(varPosi);
+                    posi.remove(varPosi);
+                } catch (Exception ex) {
+                    error = "[运算符参数错误]字符" + (posi.get(varPosi) + 1) + "运算符“*”参数错误。";
+                }
+            } else if (func.get(varPosi).equals("/")) {
+                if (func.get(varPosi + 1).equals("-")) {
+                    if (varPosi + 2 < func.size() && func.get(varPosi + 2).equals("number")) {
+                        try {
+                            func.remove(varPosi + 1);
+                            numb.remove(varPosi + 1);
+                            posi.remove(varPosi + 1);
+                            Complex varNum = numb.get(varPosi + 1);
+                            numb.set(varPosi + 1, minus(new Complex(0), varNum));
+                        } catch (Exception ex) {
+                            error = "[运算符参数错误]字符" + (posi.get(varPosi) + 2) + "运算符“-”参数错误。";
+                        }
+                    } else {
+                        error = "[运算符参数错误]字符" + (posi.get(varPosi) + 2) + "运算符“-”参数错误。";
+                    }
+                }
+                try {
+                    Complex result = divide(numb.get(varPosi - 1), numb.get(varPosi + 1));
+                    numb.set(varPosi - 1, result);
+                    func.remove(varPosi);
+                    numb.remove(varPosi);
+                    posi.remove(varPosi);
+                    func.remove(varPosi);
+                    numb.remove(varPosi);
+                    posi.remove(varPosi);
+                } catch (Exception ex) {
+                    error = "[运算符参数错误]字符" + (posi.get(varPosi) + 1) + "运算符“/”参数错误。";
+                }
+            } else {
+                varPosi++;
+            }
+        }
+        //加减运算
+        for (int varPosi = 0; varPosi < func.size() && error == null;) {
+            if (func.get(varPosi).equals("+")) {
+                if ((varPosi == 0 || !func.get(varPosi - 1).equals("number")) && (varPosi + 1 < func.size() && func.get(varPosi + 1).equals("number"))) {
+                    func.remove(varPosi);
+                    numb.remove(varPosi);
+                    posi.remove(varPosi);
+                } else {
+                    try {
+                        Complex result = add(numb.get(varPosi - 1), numb.get(varPosi + 1));
+                        numb.set(varPosi - 1, result);
+                        func.remove(varPosi);
+                        numb.remove(varPosi);
+                        posi.remove(varPosi);
+                        func.remove(varPosi);
+                        numb.remove(varPosi);
+                        posi.remove(varPosi);
+                    } catch (Exception ex) {
+                        error = "[运算符参数错误]字符" + (posi.get(varPosi) + 1) + "运算符“+”参数错误。";
+                    }
+                }
+            } else if (func.get(varPosi).equals("-")) {
+                if ((varPosi == 0 || !func.get(varPosi - 1).equals("number")) && (varPosi + 1 < func.size() && func.get(varPosi + 1).equals("number"))) {
+                    try {
+                        func.remove(varPosi);
+                        numb.remove(varPosi);
+                        posi.remove(varPosi);
+                        Complex varNum = numb.get(varPosi);
+                        numb.set(varPosi, minus(new Complex(0), varNum));
+                    } catch (Exception ex) {
+                        error = "[运算符参数错误]字符" + (posi.get(varPosi) + 1) + "运算符“-”参数错误。";
+                    }
+                } else {
+                    try {
+                        Complex result = minus(numb.get(varPosi - 1), numb.get(varPosi + 1));
+                        numb.set(varPosi - 1, result);
+                        func.remove(varPosi);
+                        numb.remove(varPosi);
+                        posi.remove(varPosi);
+                        func.remove(varPosi);
+                        numb.remove(varPosi);
+                        posi.remove(varPosi);
+                    } catch (Exception ex) {
+                        error = "[运算符参数错误]字符" + (posi.get(varPosi) + 1) + "运算符“-”参数错误。";
+                    }
+                }
+            } else {
+                varPosi++;
+            }
+        }
+
+        return new ListMemory(func, numb, posi, error, ifRad);
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println("[Java计算器终端版1.0!]");
+
+        boolean ifEsc = false;
+        boolean ifRad = true;
+
+        while (true) {
+            System.out.println();
+            System.out.println("*注意：函数名中英文皆可，后应加括号！");
+
+            Scanner sc = new Scanner(System.in, StandardCharsets.UTF_8);
+            sc.useDelimiter("\n");
+            System.out.println("请输入“/”查看功能、或输入要计算的表达式：");
+            String varSc = sc.next();
+            String str = "";
+            for (int i = 0; i < varSc.length(); i++) {
+                if ((int) varSc.charAt(i) >= 32) {
+                    str += varSc.charAt(i);
+                }
+            }
+
+
+            ArrayList<String> func = new ArrayList<String>();
+            ArrayList<Complex> numb = new ArrayList<Complex>();
+            ArrayList<Integer> posi = new ArrayList<Integer>();
+
+            int strPosi = 0;
+
+            if (!str.isEmpty() && str.charAt(0) != '/') {
+                boolean ifRight = true;
+
+                while (strPosi < str.length()) {
+                    if (str.charAt(strPosi) >= 48 && str.charAt(strPosi) <= 57) {
+                        func.add("number");
+                        posi.add(strPosi);
+                        double number = 0;
+
+                        while (strPosi < str.length() && str.charAt(strPosi) >= 48 && str.charAt(strPosi) <= 57) {
+                            number = number * 10 + (int) str.charAt(strPosi++) - 48;
+                        }
+                        if (strPosi < str.length() && str.charAt(strPosi) == 46) {
+                            int varThatTimeStrPosi = strPosi;
+                            while (++strPosi < str.length() && str.charAt(strPosi) >= 48 && str.charAt(strPosi) <= 57) {
+                                number += ((int) str.charAt(strPosi) - 48) * Math.pow(10, varThatTimeStrPosi - strPosi);
+                            }
+                        }
+
+                        numb.add(new Complex(number));
+                    } else if ((str.charAt(strPosi) == '.') && (strPosi - 1 < 0 || (str.charAt(strPosi - 1) < 48 || str.charAt(strPosi - 1) > 57)) && (strPosi + 1 < str.length() && str.charAt(strPosi + 1) >= 48 && str.charAt(strPosi + 1) <= 57)) {
+                        func.add("number");
+                        posi.add(strPosi);
+                        double number = 0;
+
+                        int varThatTimeStrPosi = strPosi;
+                        while (++strPosi < str.length() && str.charAt(strPosi) >= 48 && str.charAt(strPosi) <= 57) {
+                            number += ((int) str.charAt(strPosi) - 48) * Math.pow(10, varThatTimeStrPosi - strPosi);
+                        }
+
+                        numb.add(new Complex(number));
+                    } else if (str.charAt(strPosi) == '(' || str.charAt(strPosi) == '（') {
+                        func.add("(");
+                        numb.add(null);
+                        posi.add(strPosi++);
+                    } else if (str.charAt(strPosi) == ')' || str.charAt(strPosi) == '）') {
+                        func.add(")");
+                        numb.add(null);
+                        posi.add(strPosi++);
+                    } else if (str.charAt(strPosi) == ',' || str.charAt(strPosi) == '，') {
+                        func.add(",");
+                        numb.add(null);
+                        posi.add(strPosi++);
+                    } else if (str.charAt(strPosi) == '+') {
+                        func.add("+");
+                        numb.add(null);
+                        posi.add(strPosi++);
+                    } else if (str.charAt(strPosi) == '-') {
+                        func.add("-");
+                        numb.add(null);
+                        posi.add(strPosi++);
+                    } else if (str.charAt(strPosi) == '*') {
+                        func.add("*");
+                        numb.add(null);
+                        posi.add(strPosi++);
+                    } else if (str.charAt(strPosi) == '/') {
+                        func.add("/");
+                        numb.add(null);
+                        posi.add(strPosi++);
+                    } else if (str.charAt(strPosi) == '^') {
+                        func.add("^");
+                        numb.add(null);
+                        posi.add(strPosi++);
+                    } else if (str.charAt(strPosi) == '!' || str.charAt(strPosi) == '！') {
+                        func.add("!");
+                        numb.add(null);
+                        posi.add(strPosi++);
+                    } else if (str.charAt(strPosi) == 32) {
+                        strPosi++;
+                    } else {
+                        numb.add(null);
+                        posi.add(strPosi);
+                        String varStr = "";
+                        while (strPosi < str.length() && str.charAt(strPosi) != 32 && str.charAt(strPosi) != '(' && str.charAt(strPosi) != '（') {
+                            varStr += str.charAt(strPosi++);
+                        }
+
+                        boolean varIfRight = true;
+                        boolean varIfFunc = true;
+                        switch (varStr) {
+                            case "square", "Square", "平方" -> func.add("square");
+                            case "cube", "Cube", "立方" -> func.add("cube");
+                            case "sqrt", "Sqrt", "算术平方根", "根号" -> func.add("sqrt");
+                            case "cbrt", "Cbrt", "立方根", "三次根号" -> func.add("cbrt");
+                            case "exp", "Exp", "自然指数" -> func.add("exp");
+                            case "pow", "Pow", "乘方", "幂" -> func.add("pow");
+                            case "ln", "Ln", "自然对数" -> func.add("ln");
+                            case "lg", "log10", "Lg", "Log10" -> func.add("lg");
+                            case "logb", "Logb", "log2", "Log2" -> func.add("logb");
+                            case "logab", "log", "Logab", "Log", "对数" -> func.add("logab");
+                            case "abs", "Abs", "绝对值", "模长" -> func.add("abs");
+                            case "arg", "Arg", "angle", "Angle", "辐角" -> func.add("arg");
+                            case "re", "Re", "实部" -> func.add("re");
+                            case "im", "Im", "虚部" -> func.add("im");
+                            case "rec", "Rec", "倒数" -> func.add("rec");
+                            case "factorial", "Factorial", "阶乘" -> func.add("factorial");
+                            case "sin", "Sin", "正弦" -> func.add("sin");
+                            case "cos", "Cos", "余弦" -> func.add("cos");
+                            case "tan", "Tan", "正切" -> func.add("tan");
+                            case "cot", "Cot", "余切" -> func.add("cot");
+                            case "sec", "Sec", "正割" -> func.add("sec");
+                            case "csc", "Csc", "余割" -> func.add("csc");
+                            case "sinh", "Sinh", "sh", "Sh", "双曲正弦" -> func.add("sinh");
+                            case "cosh", "Cosh", "ch", "Ch", "双曲余弦" -> func.add("cosh");
+                            case "tanh", "Tanh", "th", "Th", "双曲正切" -> func.add("tanh");
+                            case "coth", "Coth", "双曲余切" -> func.add("coth");
+                            case "sech", "Sech", "双曲正割" -> func.add("sech");
+                            case "csch", "Csch", "双曲余割" -> func.add("csch");
+                            case "arcsin", "Arcsin", "ArcSin", "asin", "Asin", "反正弦" -> func.add("arcsin");
+                            case "arccos", "Arccos", "ArcCos", "acos", "Acos", "反余弦" -> func.add("arccos");
+                            case "arctan", "Arctan", "ArcTan", "atan", "Atan", "反正切" -> func.add("arctan");
+                            case "arccot", "Arccot", "ArcCot", "acot", "Acot", "反余切" -> func.add("arccot");
+                            case "arcsec", "Arcsec", "ArcSec", "asec", "Asec", "反正割" -> func.add("arcsec");
+                            case "arccsc", "Arccsc", "ArcCsc", "acsc", "Acsc", "反余割" -> func.add("arccsc");
+                            case "arcsinh", "Arcsinh", "ArcSinh", "asinh", "Asinh", "arsh", "Arsh", "反双曲正弦" -> func.add("arcsinh");
+                            case "arccosh", "Arccosh", "ArcCosh", "acosh", "Acosh", "arch", "Arch", "反双曲余弦" -> func.add("arccosh");
+                            case "arctanh", "Arctanh", "ArcTanh", "atanh", "Atanh", "arth", "Arth", "反双曲正切" -> func.add("arctanh");
+                            case "arccoth", "Arccoth", "ArcCoth", "acoth", "Acoth", "反双曲余切" -> func.add("arccoth");
+                            case "arcsech", "Arcsech", "ArcSech", "asech", "Asech", "反双曲正割" -> func.add("arcsech");
+                            case "arccsch", "Arccsch", "ArcCsch", "acsch", "Acsch", "反双曲余割" -> func.add("arccsch");
+                            default -> {
+                                int varStrPosi = strPosi - varStr.length();
+                                if (str.charAt(varStrPosi) == 'i' || str.charAt(varStrPosi) == 'I' || str.charAt(varStrPosi) == 'j' || str.charAt(varStrPosi) == 'J') {
+                                    varIfFunc = false;
+                                    strPosi = varStrPosi;
+                                    func.add("i");
+                                    numb.add(null);
+                                    posi.remove(posi.size() - 1);
+                                    numb.remove(numb.size() - 1);
+                                    posi.add(strPosi++);
+                                } else if ((str.charAt(varStrPosi) == 'e' || str.charAt(varStrPosi) == 'E')) {
+                                    varIfFunc = false;
+                                    strPosi = varStrPosi;
+                                    func.add("e");
+                                    numb.add(null);
+                                    posi.remove(posi.size() - 1);
+                                    numb.remove(numb.size() - 1);
+                                    posi.add(strPosi++);
+                                } else if ((str.charAt(varStrPosi) == 'p' && str.charAt(varStrPosi + 1) == 'i') || (str.charAt(varStrPosi) == 'P' && str.charAt(varStrPosi + 1) == 'i') || (str.charAt(varStrPosi) == 'P' && str.charAt(varStrPosi + 1) == 'I')) {
+                                    varIfFunc = false;
+                                    strPosi = varStrPosi;
+                                    func.add("pi");
+                                    numb.add(null);
+                                    posi.remove(posi.size() - 1);
+                                    numb.remove(numb.size() - 1);
+                                    posi.add(strPosi);
+                                    strPosi += 2;
+                                } else {
+                                    varIfRight = false;
+                                }
+                            }
+                        }
+
+                        if (!varIfRight) {
+                            System.out.println("[函数未定义]字符" + (posi.get(posi.size() - 1) + 1) + "函数" + varStr + "未被定义。");
+                            numb.remove(numb.size() - 1);
+                            posi.remove(posi.size() - 1);
+                            ifRight = false;
+                        } else if (varIfFunc && (strPosi >= str.length() || (str.charAt(strPosi) != '(' && str.charAt(strPosi) != '（'))) {
+                            System.out.println("[函数参数错误]字符" + (posi.get(posi.size() - 1) + 1) + "函数" + varStr + "后未使用括号以传递参数。");
+                            ifRight = false;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < func.size(); i++) {
+                    if (i + 1 < func.size() && func.get(i).equals("number") && func.get(i + 1).equals("number")) {
+                        ifRight = false;
+                        System.out.println("[未找到运算符]字符" + (i + 1) + "数字间未使用任何运算符连接。");
+                    }
+                    switch (func.get(i)) {
+                        case "i" -> {
+                            func.set(i, "number");
+                            numb.set(i, new Complex(0, 1));
+                        }
+                        case "e" -> {
+                            func.set(i, "number");
+                            numb.set(i, new Complex(Math.E, 0));
+                        }
+                        case "pi" -> {
+                            func.set(i, "number");
+                            numb.set(i, new Complex(Math.PI, 0));
+                        }
+                    }
+                }
+
+                if (ifRight) {
+                    ListMemory lm = new ListMemory(func, numb, posi, null, ifRad);
+                    ListMemory result = compute(lm);
+                    if (result.getError() == null) {
+                        if (lm.getFunc().size() > 1) {
+                            System.out.println("[未知的分隔符]字符" + (lm.getPosi().get(1) + 1) + "出现未知意义的“,”。");
+                        } else {
+                            Complex resNum = result.getNumb().get(0);
+                            if (Math.abs(resNum.re() * 10000000 - Math.round(resNum.re() * 10000000)) < 0.00001) {
+                                resNum.setRe((double) Math.round(resNum.re() * 10000000) / 10000000);
+                            }
+                            if (Math.abs(resNum.im() * 10000000 - Math.round(resNum.im() * 10000000)) < 0.00001) {
+                                resNum.setIm((double) Math.round(resNum.im() * 10000000) / 10000000);
+                            }
+                            System.out.println("= " + resNum);
+                        }
+                    } else {
+                        System.out.println(result.getError());
+                    }
+
+//                    for (int i = 0; i < lm.getFunc().size(); i++) {
+//                        System.out.println(lm.getFunc().get(i) + lm.getNumb().get(i) + lm.getPosi().get(i));
+//                    }
+                }
+
+            } else if (!str.isEmpty() && str.charAt(0) == '/') {
+                switch (str) {
+                    case "/" -> {
+                        System.out.println("[Java计算器终端版1.0!]--命令显示：");
+                        System.out.println("/information  --查看本计算器的基本信息。");
+                        System.out.println("/set deg  --将角度表示模式设置为角度制。");
+                        System.out.println("/set rad  --将角度表示模式设置为弧度制。");
+                        System.out.println("/function  --查看已定义函数。");
+                        System.out.println("/esc  --退出计算器。");
+                    }
+                    case "/set deg" -> {
+                        System.out.println("[Java计算器终端版1.0!]--角度表示：");
+                        ifRad = false;
+                        System.out.println("已设置为角度制。");
+                    }
+                    case "/set rad" -> {
+                        System.out.println("[Java计算器终端版1.0!]--角度表示：");
+                        ifRad = true;
+                        System.out.println("已设置为弧度制。");
+                    }
+                    case "/information" -> {
+                        System.out.println("[Java计算器终端版1.0!]--基本信息：");
+                        System.out.println("1.当前版本号：1.0。");
+                        System.out.println("2.当前功能：进行四则运算以及一些函数运算，支持复数。");
+                    }
+                    case "/function" -> {
+                        System.out.println("[Java计算器终端版1.0!]--查看函数：");
+                        System.out.println("square(x)  ||平方、Square  --传一个参数，返回其平方。");
+                        System.out.println("cube(x)  ||立方、Cube  --传一个参数，返回其立方。");
+                        System.out.println("sqrt(x)  ||算术平方根、Sqrt、根号  --传一个参数，返回其算术平方根。");
+                        System.out.println("cbrt(x)  ||立方根、Cube、三次根号  --传一个参数，返回其立方根。");
+                        System.out.println("exp(x)  ||自然指数、Exp  --传一个参数x，返回自然底数e的x次方。");
+                        System.out.println("pow(a, b)  ||幂、Pow、乘方  --传两个参数a、b，返回a的b次方，a是底数，b是指数。");
+                        System.out.println("ln(x)  ||自然对数、Ln  --传一个参数x，返回x以自然底数e为底数的对数值。");
+                        System.out.println("lg(x)  ||log10、Lg、Log10  --传一个参数，返回其以10为底数的对数值。");
+                        System.out.println("logb(x)  ||log2、Logb、Log2  --传一个参数，返回其以2为底数的对数值。");
+                        System.out.println("logab(x, n)  ||对数、log、Logab、Log  --传两个参数x、n，返回x以n为底数的对数值。x是真数，n是底数。");
+                        System.out.println("abs(z)  ||模长、绝对值、Abs  --传一个参数，返回其到原点的距离。");
+                        System.out.println("arg(z)  ||辐角、Arg、angle、Angle  --传一个参数，返回其辐角。");
+                        System.out.println("re(z)  ||实部、Re  --传一个参数，提取其实部。");
+                        System.out.println("im(z)  ||虚部、Im  --传一个参数，提取其虚部。");
+                        System.out.println("rec(n)  ||Rec、倒数  --传一个参数，返回其倒数。");
+                        System.out.println("factorial(n)  ||Factorial、阶乘  --传一个自然数，返回其阶乘。");
+                        System.out.println("三角函数：");
+                        System.out.println("sin--正弦  cos--余弦  tan--正切  cot--余切  sec--正割  csc--余割");
+                        System.out.println("sinh--双曲正弦  cosh--双曲余弦  tanh--双曲正切  coth--双曲余切  sech--双曲正割  csch--双曲余割");
+                        System.out.println("arcsin--反正弦  arccos--反余弦  arctan--反正切  arccot--反余切  arcsec--反正割  arccsc--反余割");
+                        System.out.println("arcsinh--反双曲正弦  arccosh--反双曲余弦  arctanh--反双曲正切  arccoth--反双曲余切  arcsech--反双曲正割  arccsch--反双曲余割");
+                        System.out.println("三角函数名称还可以使用中文、首字母大写，arc简化为a，sinh、cosh、tanh可以简写成sh、ch、th。");
+                        System.out.println("三角函数传一个参数，返回其三角函数值。");
+                    }
+                    case "/esc" -> {
+                        System.out.println("[Java计算器终端版1.0!]--退出：");
+                        ifEsc = true;
+                    }
+                    default -> System.out.println("[命令执行错误]命令" + str + "不是可执行的命令。");
+                }
+            } else {
+                System.out.println("[输入错误]您似乎什么都没有输入。");
+            }
+            if (ifEsc) {
+                break;
+            }
+        }
+    }
+}

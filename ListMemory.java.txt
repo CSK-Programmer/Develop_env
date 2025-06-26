@@ -1,0 +1,50 @@
+import java.util.ArrayList;
+
+public class ListMemory {
+    private ArrayList<String> func = new ArrayList<String>();
+    private ArrayList<Complex> numb = new ArrayList<Complex>();
+    private ArrayList<Integer> posi = new ArrayList<Integer>();
+    private String error;
+    private boolean ifRad;
+
+    public ListMemory(ArrayList<String> func, ArrayList<Complex> numb, ArrayList<Integer> posi, String error, boolean ifRad) {
+        this.func = func;
+        this.numb = numb;
+        this.posi = posi;
+        this.error = error;
+        this.ifRad = ifRad;
+    }
+    public ListMemory() {
+    }
+
+    public ArrayList<String> getFunc() {
+        return func;
+    }
+    public void setFunc(ArrayList<String> func) {
+        this.func = func;
+    }
+    public ArrayList<Complex> getNumb() {
+        return numb;
+    }
+    public void setNumb(ArrayList<Complex> numb) {
+        this.numb = numb;
+    }
+    public ArrayList<Integer> getPosi() {
+        return posi;
+    }
+    public void setPosi(ArrayList<Integer> posi) {
+        this.posi = posi;
+    }
+    public String getError() {
+        return error;
+    }
+    public void setError(String error) {
+        this.error = error;
+    }
+    public boolean isIfRad() {
+        return ifRad;
+    }
+    public void setIfRad(boolean ifRad) {
+        this.ifRad = ifRad;
+    }
+}
